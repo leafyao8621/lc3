@@ -7,7 +7,6 @@
 static int32_t mem_add = -1;
 static uint32_t line_num = 1;
 static int16_t offset = 0;
-static _Bool dynamic_flag = 0;
 static uint8_t num_blk = 1;
 
 enum ErrorCode {
@@ -149,7 +148,6 @@ static uint8_t cnt[256] = {0};
 union Data {
     int16_t num;
     char lbl[9];
-    char *str;
 };
 
 enum Type {
@@ -573,7 +571,7 @@ static _Bool handle_directive(enum Directive dir, char* str) {
         break;
     case END:
         if (mem_add == -1) return 0;
-        (code_end_ptr - offset)->data.num = offset;
+        (code_end_ptr - offset)->data.num = offset - 1;
         mem_add = -2;
         break;
     case HALT:
@@ -618,9 +616,21 @@ static _Bool handle_directive(enum Directive dir, char* str) {
         mem_add = num - 1;
         code_end_ptr->prefix.mem_add = num;
         break;
+    case FILL:
+        code_end_ptr->data.num = num;
+        break;
     case STRING:
         // printf("len %d", cnt);
         mem_add += cnt;
+        offset += cnt;
+        for (char *i = buf; *i; i++, code_end_ptr++) {
+            code_end_ptr->type = DIR;
+            code_end_ptr->prefix.dir = FILL;
+            code_end_ptr->data.num = *i;
+        }
+        code_end_ptr->type = DIR;
+        code_end_ptr->prefix.dir = FILL;
+        code_end_ptr->data.num = 0;
         break;
     }
     return 1;
@@ -856,6 +866,14 @@ static _Bool commit(const char* fn_out, const char* fn_dmp) {
                     fprintf(fdmp, "0x%04hx 0x%04hx %s\n", mem_add, out, buf);
                 }
                 break;
+            case FILL:
+                out = i->data.num;
+                fwrite(&out, 2, 1, fout);
+                disassemble(out, buf);
+                if (fdmp) {
+                    fprintf(fdmp, "0x%04hx 0x%04hx %s\n", mem_add, out, buf);
+                }
+                break;
             }
             break;
         case HEADER:
@@ -881,19 +899,11 @@ _Bool assemble(const char* fn_in, const char* fn_out, const char* fn_dmp) {
     mem_add = -1;
     line_num = 1;
     offset = 0;
-    dynamic_flag = 0;
     num_blk = 1;
     if (!parse(fn_in)) {
         printf("Error in Pass 1 on Line %d\n"
                "Error Code %d %s\n", line_num, err_code,
                err_code_str[err_code]);
-        if (dynamic_flag) {
-            for (struct Token* i = code; i != code_end_ptr; i++) {
-                if (i->type == DIR && i->prefix.dir == STRING) {
-                    free(i->data.str);
-                }
-            }
-        }
         return 0;
     }
     puts("Pass 1 No Error");
@@ -901,13 +911,6 @@ _Bool assemble(const char* fn_in, const char* fn_out, const char* fn_dmp) {
         printf("Error in Pass 2 on Line %d\n"
                "Error Code %d %s\n", line_num, err_code,
                err_code_str[err_code]);
-        if (dynamic_flag) {
-            for (struct Token* i = code; i != code_end_ptr; i++) {
-                if (i->type == DIR && i->prefix.dir == STRING) {
-                    free(i->data.str);
-                }
-            }
-        }
         return 0;
     }
     puts("Pass 2 No Error");

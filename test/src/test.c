@@ -4,6 +4,6 @@
 
 int main(void) {
     assemble("fibb.asm", "fibb.obj", "fibb.dmp");
-    // load("fibb.obj");
-    // run();
+    load("fibb.obj");
+    run();
 }
