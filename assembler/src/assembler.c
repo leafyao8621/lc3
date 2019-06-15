@@ -299,7 +299,7 @@ static _Bool check_operand_operator(const enum Operator op, char* str) {
                 return 0;
             }
             for (; *seg_buf == 32 && *seg_buf; seg_buf++);
-            if ((*seg_buf) & 0xdf != 'R') return 0;
+            if (((*seg_buf) & 0xdf) != 'R') return 0;
             seg_buf++;
             if (!*seg_buf) {
                 err_code = INVALID_OPERAND;
