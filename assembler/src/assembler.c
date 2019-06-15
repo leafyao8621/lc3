@@ -145,7 +145,7 @@ struct Pair {
 
 static uint8_t cnt[256] = {0};
 
-union Data {
+struct Data {
     int16_t num;
     char lbl[9];
 };
@@ -166,7 +166,7 @@ union Prefix {
 struct Token {
     enum Type type;
     union Prefix prefix;
-    union Data data;
+    struct Data data;
 } code[1 << 16];
 
 struct Token* code_end_ptr = code;
@@ -358,6 +358,7 @@ static _Bool check_operand_operator(const enum Operator op, char* str) {
                     err_code = OVERFLOW;
                     return 0;
                 }
+                code_end_ptr->data.num |= 0x20;
                 // printf("num5 0x%04hx ", num);
                 break;
             case '#' & 0xdf:
@@ -371,13 +372,14 @@ static _Bool check_operand_operator(const enum Operator op, char* str) {
                     err_code = OVERFLOW;
                     return 0;
                 }
+                code_end_ptr->data.num |= 0x20;
                 // printf("num5 %hd ", num);
                 break;
             default:
                 err_code = INVALID_OPERAND;
                 return 0;
             }
-            code_end_ptr->data.num |= (0x20 | (num & 0x1f));
+            code_end_ptr->data.num |= num & 0x1f;
             break;
         case NUM6:
             seg_buf = strtok(i ? NULL : str, ",");
@@ -523,7 +525,7 @@ static _Bool check_operand_operator(const enum Operator op, char* str) {
                     return 0;
                 }
                 // printf("num11 0x%04hx ", num);
-                code_end_ptr->data.num |= (num & 0x7ff);
+                code_end_ptr->data.num = (num & 0x7ff);
                 break;
             case '#' & 0xdf:
                 seg_buf++;
@@ -537,11 +539,12 @@ static _Bool check_operand_operator(const enum Operator op, char* str) {
                     return 0;
                 }
                 // printf("num11 %hd ", num);
-                code_end_ptr->data.num |= (num & 0x7ff);
+                code_end_ptr->data.num = (num & 0x7ff);
                 break;
             default:
                 trim_token(seg_buf, trim_buf);
                 // printf("lbl %s ", trim_buf);
+                code_end_ptr->data.num = 0;
                 memcpy(code_end_ptr->data.lbl, trim_buf, 9);
                 code_end_ptr->type = OP_LBL;
                 break;
@@ -839,7 +842,7 @@ static _Bool commit(const char* fn_out, const char* fn_dmp) {
                 err_code = INVALID_LABEL;
                 return 0;
             }
-            out = op_code[i->prefix.op] |
+            out = op_code[i->prefix.op] | i->data.num |
                   ((tgt->val - (mem_add + 1)) &
                   (i->prefix.op == JSR ? 0x7ff : 0x1ff));
             disassemble(out, buf);

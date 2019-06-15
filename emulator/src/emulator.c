@@ -180,7 +180,10 @@ void execute(int16_t ins, char* out) {
         switch (ins & 0xff) {
         case 0x21:
             out_flag = 1;
-            if (out) *out = CPU.r[0];
+            if (out) {
+                *out = CPU.r[0];
+                out[1] = 0;
+            }
             return;
         case 0x22:
             out_flag = 1;
@@ -234,14 +237,19 @@ void step(void) {
     }
 }
 
-void run(void) {
+void run(_Bool dbg) {
     char buf[50];
     for (halt = 0; !halt; CPU.pc++) {
         disassemble(mem[CPU.pc], buf);
-        printf("mem 0x%04hx\nins 0x%04hx\nasm %s\n", CPU.pc, mem[CPU.pc], buf);
+        if (dbg) {
+            printf("mem 0x%04hx\nins 0x%04hx\nasm %s\n",
+                   CPU.pc, mem[CPU.pc], buf);
+        }
         execute(mem[CPU.pc], out_buf);
-        print_cpu();
-        putchar(10);
+        if (dbg) {
+            print_cpu();
+            putchar(10);
+        }
         if (out_flag) printf("%s", out_buf);
         out_flag = 0;
     }

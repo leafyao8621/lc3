@@ -10,6 +10,11 @@
 
     ldr r0, r6, #0
     add r6, r6, #2
+    lea r0, MSG
+    trap x22
+    and r0, r0, #0
+    add r0, r0, #10
+    trap x21
     halt
 
 fibonacci
@@ -80,6 +85,7 @@ eif
     ldr r7, r5, #2
     add r6, r5, #3
     ldr r5, r5, #1
+    ld r0, MSG
     ret
 MSG .stringz "this is a string"
 STACK .fill xF000

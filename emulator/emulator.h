@@ -14,5 +14,5 @@ int16_t get_mem(int add);
 void print_cpu(void);
 void load(char* fn);
 void step(void);
-void run(void);
+void run(_Bool dbg);
 #endif
