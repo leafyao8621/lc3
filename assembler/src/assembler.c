@@ -320,7 +320,7 @@ static _Bool check_operand_operator(const enum Operator op, char* str) {
                     break;
                 case 1:
                     code_end_ptr->data.num |= num << 6;
-                    break; 
+                    break;
                 }
                 break;
             }
@@ -650,7 +650,7 @@ static _Bool parse(const char* fn) {
                                                 line_num++, code_end_ptr++) {
         seg_buf = strtok(line_buf, " ");
         if (*seg_buf != 10) {
-            
+
             trim_token(seg_buf, trim_buf);
             if (check_operator(trim_buf, &op)) {
                 code_end_ptr->type = OP;
@@ -893,7 +893,7 @@ static _Bool commit(const char* fn_out, const char* fn_dmp) {
         }
     }
     fclose(fout);
-    fclose(fdmp);
+    if (fn_dmp) fclose(fdmp);
     return 1;
 }
 
