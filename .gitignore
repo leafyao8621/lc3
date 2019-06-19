@@ -1,0 +1,9 @@
+assembler/.vscode
+emulator/.vscode
+lc3as/.vscode
+assembler/src/*.o
+emulator/src/*.o
+lc3as/src/*.o
+assembler/assembler.a
+emulator/emulator.a
+test
