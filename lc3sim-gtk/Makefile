@@ -11,3 +11,6 @@ BIN = lc3sim-gtk
 $(BIN): $(OBJ)
 	$(CC) $(OBJ) $(LIB) -o $(BIN) $(GTK)
 
+.PHONY: clean
+clean: $(BIN)
+	@rm $(OBJ) $(BIN)

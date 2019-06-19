@@ -926,5 +926,6 @@ _Bool assemble(const char* fn_in, const char* fn_out, const char* fn_dmp) {
         return 0;
     }
     puts("Pass 2 No Error");
+    snprintf(err_str, 1000, "%s", "No Error");
     return 1;
 }

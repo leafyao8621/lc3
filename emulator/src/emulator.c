@@ -196,10 +196,6 @@ void execute(int16_t ins, char* out) {
     }
 }
 
-int16_t get_r(int ind) {
-    return CPU.r[ind];
-}
-
 struct CPU get_cpu(void) {
     return CPU;
 }
@@ -232,8 +228,6 @@ void load(char* fn) {
 void step(void) {
     if (!halt) {
         execute(mem[CPU.pc++], out_buf);
-        if (out_flag) printf("%s", out_buf);
-        out_flag = 0;
     }
 }
 
@@ -253,4 +247,20 @@ void run(_Bool dbg) {
         if (out_flag) printf("%s", out_buf);
         out_flag = 0;
     }
+}
+
+_Bool get_out_flag(void) {
+    return out_flag;
+}
+
+void reset_out_flag(void) {
+    out_flag = 0;
+}
+
+_Bool get_halt(void) {
+    return halt;
+}
+
+void unhalt(void) {
+    halt = 0;
 }

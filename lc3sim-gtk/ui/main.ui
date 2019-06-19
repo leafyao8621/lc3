@@ -1,0 +1,55 @@
+<interface>
+    <object id="window" class="GtkWindow">
+        <property name="visible">True</property>
+        <property name="title">lc3sim</property>
+        <child>
+            <object id="grid" class="GtkGrid">
+                <property name="visible">True</property>
+                <child>
+                    <object id="asm_console" class="GtkTextView">
+                        <property name="visible">True</property>
+                        <property name="editable">False</property>
+                    </object>
+                    <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <object id="out_console" class="GtkTextView">
+                        <property name="visible">True</property>
+                        <property name="editable">False</property>
+                    </object>
+                    <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkFileChooserButton">
+                        <property name="visible">True</property>
+                        <!-- <property name="dialog">
+                            <object id="file_picker" class="GtkFileChooserDialog">
+                            </object>
+                        </property> -->
+                    </object>
+                    <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <object id="asm_btn" class="GtkButton">
+                        <property name="visible">True</property>
+                        <property name="label">Assemble</property>
+                    </object>
+                    <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">2</property>
+                    </packing>
+                </child>
+            </object>
+        </child>
+        
+    </object>
+</interface>
