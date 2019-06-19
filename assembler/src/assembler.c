@@ -30,6 +30,7 @@ static char* err_code_str[] = {
 };
 
 static enum ErrorCode err_code = NO_ERROR;
+char err_str[1000];
 
 enum Operator {
     ADD,
@@ -907,6 +908,10 @@ _Bool assemble(const char* fn_in, const char* fn_out, const char* fn_dmp) {
         printf("Error in Pass 1 on Line %d\n"
                "Error Code %d %s\n", line_num, err_code,
                err_code_str[err_code]);
+        snprintf(err_str, 1000,
+                 "Error in Pass 1 on Line %d\n"
+                 "Error Code %d %s\n", line_num, err_code,
+                 err_code_str[err_code]);
         return 0;
     }
     puts("Pass 1 No Error");
@@ -914,6 +919,10 @@ _Bool assemble(const char* fn_in, const char* fn_out, const char* fn_dmp) {
         printf("Error in Pass 2 on Line %d\n"
                "Error Code %d %s\n", line_num, err_code,
                err_code_str[err_code]);
+        snprintf(err_str, 1000,
+                 "Error in Pass 2 on Line %d\n"
+                 "Error Code %d %s\n", line_num, err_code,
+                 err_code_str[err_code]);
         return 0;
     }
     puts("Pass 2 No Error");
