@@ -1,0 +1,6 @@
+<interface>
+    <object id="window" class="GtkWindow">
+        <property name="visible">True</property>
+        <property name="title">lc3sim</property>
+    </object>
+</interface>
