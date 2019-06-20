@@ -26,12 +26,8 @@
                     </packing>
                 </child>
                 <child>
-                    <object class="GtkFileChooserButton">
+                    <object id="file_picker" class="GtkFileChooserButton">
                         <property name="visible">True</property>
-                        <!-- <property name="dialog">
-                            <object id="file_picker" class="GtkFileChooserDialog">
-                            </object>
-                        </property> -->
                     </object>
                     <packing>
                         <property name="left-attach">1</property>
