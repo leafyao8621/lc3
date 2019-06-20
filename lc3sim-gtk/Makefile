@@ -25,5 +25,5 @@ $(BIN): $(OBJ) $(RES_OUT)
 
 .PHONY: clean all
 all: $(BIN) $(RES_OUT)
-clean: $(BIN)
-	@rm $(OBJ) $(BIN)
+clean: $(BIN) $(RES_OUT)
+	@rm $(OBJ) $(BIN) $(RES_OUT) $(RES_OUT_SRC)

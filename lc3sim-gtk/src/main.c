@@ -12,14 +12,23 @@ void file_picker_handle(GtkFileChooserButton* btn, gpointer data) {
 
 void asm_handle(GtkButton* btn, gpointer data) {
     if (!fn) return;
+    GtkTextIter as, ae, os, oe;
+    gtk_text_buffer_get_start_iter(asm_console_buf, &as);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_delete(asm_console_buf, &as, &ae);
+    gtk_text_buffer_get_start_iter(out_console_buf, &os);
+    gtk_text_buffer_get_end_iter(out_console_buf, &oe);
+    gtk_text_buffer_delete(out_console_buf, &os, &oe);
     assemble(fn, "out.obj", "out.dmp");
-    gtk_text_buffer_insert_at_cursor(asm_console_buf, err_str, -1);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, err_str, -1);
     load("out.obj");
     for (unhalt(); !get_halt();) {
         step();
         if (get_out_flag()) {
             printf("%s", out_buf);
-            gtk_text_buffer_insert_at_cursor(out_console_buf, out_buf, -1);
+            gtk_text_buffer_get_end_iter(out_console_buf, &oe);
+            gtk_text_buffer_insert(out_console_buf, &oe, out_buf, -1);
         }
         reset_out_flag();
     }

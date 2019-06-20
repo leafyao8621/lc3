@@ -904,6 +904,7 @@ _Bool assemble(const char* fn_in, const char* fn_out, const char* fn_dmp) {
     line_num = 1;
     offset = 0;
     num_blk = 1;
+    memset(cnt, 0, 256);
     if (!parse(fn_in)) {
         printf("Error in Pass 1 on Line %d\n"
                "Error Code %d %s\n", line_num, err_code,
