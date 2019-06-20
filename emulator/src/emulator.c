@@ -215,12 +215,12 @@ void load(char* fn) {
     uint8_t n_blk = 0;
     fread(&n_blk, 1, 1, inf);
     char buf[100];
-    for (int i = 0; i < n_blk; i++) {
+    for (int i = 0; i < n_blk && !feof(inf); i++) {
         uint16_t header[2];
         fread(header, 2, 2, inf);
         if (!i) CPU.pc = header[0];
         int16_t* mem_ptr = mem + header[0];
-        for (int j = 0; j < header[1]; j++, fread(mem_ptr++, 2, 1, inf));
+        for (int j = 0; j < header[1] && !feof(inf); j++, fread(mem_ptr++, 2, 1, inf));
     }
     fclose(inf);
 }
