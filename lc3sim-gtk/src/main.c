@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <gtk/gtk.h>
 #include "../../assembler/assembler.h"
 #include "../../emulator/emulator.h"
@@ -5,9 +6,46 @@
 const gchar* fn = 0;
 GtkTextBuffer* asm_console_buf;
 GtkTextBuffer* out_console_buf;
+struct {
+    GtkLabel* dec;
+    GtkLabel* hex;
+} reg_label[8];
+struct {
+    GtkLabel* hex;
+    GtkLabel* ins;
+} ins_prev, ins_cur, ins_next;
 
 void file_picker_handle(GtkFileChooserButton* btn, gpointer data) {
     fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(btn));
+}
+
+inline static void show_registers(void) {
+    struct CPU cpu = get_cpu();
+    char buf[20];
+    for (int i = 0; i < 8; i++) {
+        snprintf(buf, 20, "%hd", cpu.r[i]);
+        gtk_label_set_label(reg_label[i].dec, buf);
+        snprintf(buf, 20, "0x%04hX", cpu.r[i]);
+        gtk_label_set_label(reg_label[i].hex, buf);
+    }
+}
+
+inline static void show_ins(void) {
+    struct CPU cpu = get_cpu();
+    char bufi[50];
+    char bufh[20];
+    snprintf(bufh, 20, "0x%04hX", get_mem(cpu.pc - 1));
+    gtk_label_set_label(ins_prev.hex, bufh);
+    disassemble(get_mem(cpu.pc - 1), bufi);
+    gtk_label_set_label(ins_prev.ins, bufi);
+    snprintf(bufh, 20, "0x%04hX", get_mem(cpu.pc));
+    gtk_label_set_label(ins_cur.hex, bufh);
+    disassemble(get_mem(cpu.pc), bufi);
+    gtk_label_set_label(ins_cur.ins, bufi);
+    snprintf(bufh, 20, "0x%04hX", get_mem(cpu.pc + 1));
+    gtk_label_set_label(ins_next.hex, bufh);
+    disassemble(get_mem(cpu.pc + 1), bufi);
+    gtk_label_set_label(ins_next.ins, bufi);
 }
 
 void asm_handle(GtkButton* btn, gpointer data) {
@@ -23,15 +61,57 @@ void asm_handle(GtkButton* btn, gpointer data) {
     gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
     gtk_text_buffer_insert(asm_console_buf, &ae, err_str, -1);
     load("out.obj");
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, fn, -1);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, "assembled and loaded", -1);
+    show_registers();
+}
+
+void ld_handle(GtkButton* btn, gpointer data) {
+    if (!fn) return;
+    GtkTextIter ae;
+    load((char*)fn);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, fn, -1);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
+    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+    gtk_text_buffer_insert(asm_console_buf, &ae, "loaded", -1);
+    show_registers();
+    show_ins();
+}
+
+void step_handle(GtkButton* btn, gpointer data) {
+    step(0);
+    show_registers();
+    show_ins();
+    GtkTextIter oe;
+    if (get_out_flag()) {
+        gtk_text_buffer_get_end_iter(out_console_buf, &oe);
+        gtk_text_buffer_insert(out_console_buf, &oe, out_buf, -1);
+    }
+    reset_out_flag();
+}
+
+void run_handle(GtkButton* btn, gpointer data) {
+    GtkTextIter oe;
     for (unhalt(); !get_halt();) {
-        step();
+        step(0);
         if (get_out_flag()) {
-            printf("%s", out_buf);
             gtk_text_buffer_get_end_iter(out_console_buf, &oe);
             gtk_text_buffer_insert(out_console_buf, &oe, out_buf, -1);
         }
         reset_out_flag();
     }
+    show_registers();
+    show_ins();
 }
 
 int main(int argc, char** argv) {
@@ -56,11 +136,29 @@ int main(int argc, char** argv) {
     out_console_buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(
             gtk_builder_get_object(builder, "out_console")
         ));
-    
+    char bufd[50], bufh[50];
+    for (int i = 0; i < 8; i++) {
+        snprintf(bufd, 50, "r%d_value_d", i);
+        snprintf(bufh, 50, "r%d_value_h", i);
+        reg_label[i].dec = GTK_LABEL(gtk_builder_get_object(builder, bufd));
+        reg_label[i].hex = GTK_LABEL(gtk_builder_get_object(builder, bufh));
+    }
+    ins_prev.hex = GTK_LABEL(gtk_builder_get_object(builder, "ins_prev_h"));
+    ins_prev.ins = GTK_LABEL(gtk_builder_get_object(builder, "ins_prev_i"));
+    ins_cur.hex = GTK_LABEL(gtk_builder_get_object(builder, "ins_cur_h"));
+    ins_cur.ins = GTK_LABEL(gtk_builder_get_object(builder, "ins_cur_i"));
+    ins_next.hex = GTK_LABEL(gtk_builder_get_object(builder, "ins_next_h"));
+    ins_next.ins = GTK_LABEL(gtk_builder_get_object(builder, "ins_next_i"));
     g_signal_connect(gtk_builder_get_object(builder, "file_picker"), "file-set",
                      G_CALLBACK(file_picker_handle), 0);
     g_signal_connect(gtk_builder_get_object(builder, "asm_btn"), "clicked",
                      G_CALLBACK(asm_handle), 0);
+    g_signal_connect(gtk_builder_get_object(builder, "ld_btn"), "clicked",
+                     G_CALLBACK(ld_handle), 0);
+    g_signal_connect(gtk_builder_get_object(builder, "step_btn"), "clicked",
+                     G_CALLBACK(step_handle), 0);
+    g_signal_connect(gtk_builder_get_object(builder, "run_btn"), "clicked",
+                     G_CALLBACK(run_handle), 0);
     gtk_main();
     
     return 0;

@@ -225,27 +225,32 @@ void load(char* fn) {
     fclose(inf);
 }
 
-void step(void) {
+void step(_Bool is_console) {
     if (!halt) {
-        execute(mem[CPU.pc++], out_buf);
+        execute(mem[CPU.pc], out_buf);
+        CPU.pc++;
+        if (is_console) {
+            if (out_flag) printf("%s", out_buf);
+            out_flag = 0;
+        }
     }
 }
 
 void run(_Bool dbg) {
     char buf[50];
-    for (halt = 0; !halt; CPU.pc++) {
+    for (halt = 0; !halt;) {
         disassemble(mem[CPU.pc], buf);
         if (dbg) {
             printf("mem 0x%04hx\nins 0x%04hx\nasm %s\n",
                    CPU.pc, mem[CPU.pc], buf);
         }
-        execute(mem[CPU.pc], out_buf);
+        // execute(mem[CPU.pc], out_buf);
+        step(1);
         if (dbg) {
+            putchar(10);
             print_cpu();
             putchar(10);
         }
-        if (out_flag) printf("%s", out_buf);
-        out_flag = 0;
     }
 }
 

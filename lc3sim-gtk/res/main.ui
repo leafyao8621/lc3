@@ -3,12 +3,589 @@
         <property name="visible">True</property>
         <property name="title">lc3sim</property>
         <child>
-            <object id="grid" class="GtkGrid">
+            <object class="GtkGrid">
                 <property name="visible">True</property>
                 <child>
-                    <object id="asm_console" class="GtkTextView">
+                    <object class="GtkGrid">
                         <property name="visible">True</property>
-                        <property name="editable">False</property>
+                        <property name="margin-top">5</property>
+                        <property name="margin-left">5</property>
+                        <child>
+                            <object class="GtkGrid">
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">R0</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">0</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">R1</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">R2</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">R3</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">3</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">R4</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">4</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">R5</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">5</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">R6</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">6</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">R7</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">7</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r0_value_d" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">0</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r1_value_d" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r2_value_d" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r3_value_d" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">3</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r4_value_d" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">4</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r5_value_d" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">5</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r6_value_d" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">6</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r7_value_d" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">7</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r0_value_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">0</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r1_value_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r2_value_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r3_value_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">3</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r4_value_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">4</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r5_value_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">5</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r6_value_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">6</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="r7_value_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">7</property>
+                                    </packing>
+                                </child>
+                            </object>
+                            <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">0</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkGrid">
+                                <property name="visible">True</property>
+                                <property name="margin-left">5</property>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">Previous</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">0</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">Current</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label">Next</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="ins_prev_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">0</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="ins_cur_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="ins_next_h" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">60</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="ins_prev_i" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">200</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">0</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="ins_cur_i" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">200</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object id="ins_next_i" class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="label"></property>
+                                                <property name="width-request">200</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">2</property>
+                                    </packing>
+                                </child>
+                            </object>
+                            <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">0</property>
+                            </packing>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">0</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkGrid">
+                        <property name="visible">True</property>
+                        <property name="margin-top">5</property>
+                        <property name="margin-left">5</property>
+                        <child>
+                            <object id="asm_console" class="GtkTextView">
+                                <property name="visible">True</property>
+                                <property name="editable">False</property>
+                                <property name="monospace">True</property>
+                                <property name="wrap-mode">GTK_WRAP_CHAR</property>
+                                <property name="height-request">200</property>
+                                <property name="width-request">400</property>
+                            </object>
+                            <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">0</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object id="out_console" class="GtkTextView">
+                                <property name="visible">True</property>
+                                <property name="editable">False</property>
+                                <property name="monospace">True</property>
+                                <property name="wrap-mode">GTK_WRAP_CHAR</property>
+                                <property name="height-request">200</property>
+                                <property name="width-request">400</property>
+                                <property name="margin-top">5</property>
+                            </object>
+                            <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">1</property>
+                            </packing>
+                        </child>
                     </object>
                     <packing>
                         <property name="left-attach">0</property>
@@ -16,32 +593,64 @@
                     </packing>
                 </child>
                 <child>
-                    <object id="out_console" class="GtkTextView">
+                    <object class="GtkGrid">
                         <property name="visible">True</property>
-                        <property name="editable">False</property>
-                    </object>
-                    <packing>
-                        <property name="left-attach">0</property>
-                        <property name="top-attach">2</property>
-                    </packing>
-                </child>
-                <child>
-                    <object id="file_picker" class="GtkFileChooserButton">
-                        <property name="visible">True</property>
+                        <property name="margin-left">10</property>
+                        <property name="margin-right">5</property>
+                        <property name="margin-top">5</property>
+                        <child>
+                            <object id="file_picker" class="GtkFileChooserButton">
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">0</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object id="asm_btn" class="GtkButton">
+                                <property name="visible">True</property>
+                                <property name="label">Assemble</property>
+                            </object>
+                            <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object id="ld_btn" class="GtkButton">
+                                <property name="visible">True</property>
+                                <property name="label">Load</property>
+                            </object>
+                            <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object id="step_btn" class="GtkButton">
+                                <property name="visible">True</property>
+                                <property name="label">Step</property>
+                            </object>
+                            <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object id="run_btn" class="GtkButton">
+                                <property name="visible">True</property>
+                                <property name="label">Run</property>
+                            </object>
+                            <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">4</property>
+                            </packing>
+                        </child>
                     </object>
                     <packing>
                         <property name="left-attach">1</property>
-                        <property name="top-attach">1</property>
-                    </packing>
-                </child>
-                <child>
-                    <object id="asm_btn" class="GtkButton">
-                        <property name="visible">True</property>
-                        <property name="label">Assemble</property>
-                    </object>
-                    <packing>
-                        <property name="left-attach">1</property>
-                        <property name="top-attach">2</property>
+                        <property name="top-attach">0</property>
                     </packing>
                 </child>
             </object>
