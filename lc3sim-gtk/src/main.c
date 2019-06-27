@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <pthread.h>
 #include <gtk/gtk.h>
 #include "../../assembler/assembler.h"
 #include "../../emulator/emulator.h"
@@ -20,6 +22,10 @@ static struct {
     GtkLabel* add;
     GtkLabel* val;
 } mem_monitor[10];
+static GtkEntry* entry;
+static pthread_t runner;
+static _Bool busy;
+static GObject* window;
 
 void file_picker_handle(GtkFileChooserButton* btn, gpointer data) {
     fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(btn));
@@ -66,64 +72,71 @@ inline static void show_mem(void) {
 }
 
 void asm_handle(GtkButton* btn, gpointer data) {
-    if (!fn) return;
-    GtkTextIter as, ae, os, oe;
-    gtk_text_buffer_get_start_iter(asm_console_buf, &as);
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_delete(asm_console_buf, &as, &ae);
-    gtk_text_buffer_get_start_iter(out_console_buf, &os);
-    gtk_text_buffer_get_end_iter(out_console_buf, &oe);
-    gtk_text_buffer_delete(out_console_buf, &os, &oe);
-    assemble(fn, "out.obj", "out.dmp");
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, err_str, -1);
-    load("out.obj");
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, fn, -1);
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, "assembled and loaded", -1);
-    show_registers();
-    show_ins();
-    mem_start = (get_cpu()).pc;
-    show_mem();
+    if (!busy) {
+        if (!fn) return;
+        GtkTextIter as, ae, os, oe;
+        gtk_text_buffer_get_start_iter(asm_console_buf, &as);
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_delete(asm_console_buf, &as, &ae);
+        gtk_text_buffer_get_start_iter(out_console_buf, &os);
+        gtk_text_buffer_get_end_iter(out_console_buf, &oe);
+        gtk_text_buffer_delete(out_console_buf, &os, &oe);
+        assemble(fn, "out.obj", "out.dmp");
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, err_str, -1);
+        load("out.obj");
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, fn, -1);
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, "assembled and loaded", -1);
+        show_registers();
+        show_ins();
+        mem_start = (get_cpu()).pc;
+        show_mem();
+    }
 }
 
 void ld_handle(GtkButton* btn, gpointer data) {
-    if (!fn) return;
-    GtkTextIter ae;
-    load((char*)fn);
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, fn, -1);
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
-    gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
-    gtk_text_buffer_insert(asm_console_buf, &ae, "loaded", -1);
-    show_registers();
-    show_ins();
-    mem_start = (get_cpu()).pc;
-    show_mem();
+    if (!busy) {
+        if (!fn) return;
+        GtkTextIter ae;
+        load((char*)fn);
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, fn, -1);
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, "\n", -1);
+        gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
+        gtk_text_buffer_insert(asm_console_buf, &ae, "loaded", -1);
+        show_registers();
+        show_ins();
+        mem_start = (get_cpu()).pc;
+        show_mem();
+    }
 }
 
 void step_handle(GtkButton* btn, gpointer data) {
-    step(0);
-    show_registers();
-    show_ins();
-    show_mem();
-    GtkTextIter oe;
-    if (get_out_flag()) {
-        gtk_text_buffer_get_end_iter(out_console_buf, &oe);
-        gtk_text_buffer_insert(out_console_buf, &oe, out_buf, -1);
+    if (!busy) {
+        step(0);
+        show_registers();
+        show_ins();
+        show_mem();
+        GtkTextIter oe;
+        if (get_out_flag()) {
+            gtk_text_buffer_get_end_iter(out_console_buf, &oe);
+            gtk_text_buffer_insert(out_console_buf, &oe, out_buf, -1);
+        }
+        reset_out_flag();
     }
-    reset_out_flag();
 }
 
-void run_handle(GtkButton* btn, gpointer data) {
+static void* runner_handle(void* data) {
+    busy = 1;
     GtkTextIter oe;
     for (unhalt(); !get_halt();) {
         step(0);
@@ -133,24 +146,52 @@ void run_handle(GtkButton* btn, gpointer data) {
         }
         reset_out_flag();
     }
-    show_registers();
-    show_ins();
-    show_mem();
+    g_signal_emit_by_name(window, "runner-finished");
+}
+
+void run_handle(GtkButton* btn, gpointer data) {
+    if (!busy) {
+        pthread_create(&runner, 0, runner_handle, 0);
+        pthread_detach(runner);
+    }
+}
+
+void stop_handle(GtkButton* btn, gpointer data) {
+    if (busy) {
+        busy = 0;
+        set_halt();
+    }
 }
 
 void mem_mov_handle(GtkButton* btn, gpointer data) {
-    _Bool is_up = *(_Bool*)data;
-    if (is_up && mem_start) {
-        mem_start -= 10;
-    } else if (mem_start < (1 << 16)) {
-        mem_start += 10;
+    if (!busy) {
+        _Bool is_up = *(_Bool*)data;
+        if (is_up && mem_start) {
+            mem_start -= 10;
+        } else if (mem_start < (1 << 16)) {
+            mem_start += 10;
+        }
+        show_mem();
     }
-    show_mem();
 }
+
+void mem_btn_handle(GtkButton* btn, gpointer data) {
+    if (!busy) {
+        mem_start = strtol(gtk_entry_get_text(entry), 0, 16);
+        show_mem();
+    }
+}
+
+void run_finished_handle(GObject* obj, gpointer data) {
+    show_registers();
+    show_ins();
+    show_mem();
+    busy = 0;
+}
+
 int main(int argc, char** argv) {
     GtkBuilder* builder;
     GError* error = NULL;
-    GObject* window;
     
     gtk_init(&argc, &argv);
     builder = gtk_builder_new();
@@ -189,6 +230,7 @@ int main(int argc, char** argv) {
         mem_monitor[i].add = GTK_LABEL(gtk_builder_get_object(builder, bufa));
         mem_monitor[i].val = GTK_LABEL(gtk_builder_get_object(builder, bufv));
     }
+    entry = GTK_ENTRY(gtk_builder_get_object(builder, "mem_ent"));
     g_signal_connect(gtk_builder_get_object(builder, "file_picker"), "file-set",
                      G_CALLBACK(file_picker_handle), 0);
     g_signal_connect(gtk_builder_get_object(builder, "asm_btn"), "clicked",
@@ -199,6 +241,8 @@ int main(int argc, char** argv) {
                      G_CALLBACK(step_handle), 0);
     g_signal_connect(gtk_builder_get_object(builder, "run_btn"), "clicked",
                      G_CALLBACK(run_handle), 0);
+    g_signal_connect(gtk_builder_get_object(builder, "stop_btn"), "clicked",
+                     G_CALLBACK(stop_handle), 0);
     _Bool t, f;
     t = 1;
     f = 0;
@@ -206,6 +250,11 @@ int main(int argc, char** argv) {
                      G_CALLBACK(mem_mov_handle), &t);
     g_signal_connect(gtk_builder_get_object(builder, "mem_add_down"), "clicked",
                      G_CALLBACK(mem_mov_handle), &f);
+    g_signal_connect(gtk_builder_get_object(builder, "mem_btn"), "clicked",
+                     G_CALLBACK(mem_btn_handle), 0);
+    g_signal_new("runner-finished", G_TYPE_OBJECT, G_SIGNAL_RUN_FIRST, 0, 0, 0,
+                 0, G_TYPE_NONE, 0);
+    g_signal_connect(window, "runner-finished", G_CALLBACK(run_finished_handle), 0);
     gtk_main();
     
     return 0;

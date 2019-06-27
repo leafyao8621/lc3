@@ -266,6 +266,10 @@ _Bool get_halt(void) {
     return halt;
 }
 
+void set_halt(void) {
+    halt = 1;
+}
+
 void unhalt(void) {
     halt = 0;
 }

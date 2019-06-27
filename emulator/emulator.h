@@ -22,5 +22,6 @@ void run(_Bool dbg);
 _Bool get_out_flag(void);
 void reset_out_flag(void);
 _Bool get_halt(void);
+void set_halt(void);
 void unhalt(void);
 #endif
