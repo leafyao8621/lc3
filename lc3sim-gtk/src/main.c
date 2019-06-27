@@ -1,19 +1,25 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <gtk/gtk.h>
 #include "../../assembler/assembler.h"
 #include "../../emulator/emulator.h"
 
-const gchar* fn = 0;
-GtkTextBuffer* asm_console_buf;
-GtkTextBuffer* out_console_buf;
-struct {
+static const gchar* fn = 0;
+static GtkTextBuffer* asm_console_buf;
+static GtkTextBuffer* out_console_buf;
+static struct {
     GtkLabel* dec;
     GtkLabel* hex;
 } reg_label[8];
-struct {
+static struct {
     GtkLabel* hex;
     GtkLabel* ins;
 } ins_prev, ins_cur, ins_next;
+static uint16_t mem_start;
+static struct {
+    GtkLabel* add;
+    GtkLabel* val;
+} mem_monitor[10];
 
 void file_picker_handle(GtkFileChooserButton* btn, gpointer data) {
     fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(btn));
@@ -48,6 +54,17 @@ inline static void show_ins(void) {
     gtk_label_set_label(ins_next.ins, bufi);
 }
 
+inline static void show_mem(void) {
+    char bufa[20];
+    char bufh[20];
+    for (uint16_t i = 0, j = mem_start; i < 10 && j < (1 << 16); i++, j++) {
+        snprintf(bufa, 20, "0x%04hX", j);
+        snprintf(bufh, 20, "0x%04hX", get_mem(j));
+        gtk_label_set_label(mem_monitor[i].add, bufa);
+        gtk_label_set_label(mem_monitor[i].val, bufh);
+    }
+}
+
 void asm_handle(GtkButton* btn, gpointer data) {
     if (!fn) return;
     GtkTextIter as, ae, os, oe;
@@ -70,6 +87,9 @@ void asm_handle(GtkButton* btn, gpointer data) {
     gtk_text_buffer_get_end_iter(asm_console_buf, &ae);
     gtk_text_buffer_insert(asm_console_buf, &ae, "assembled and loaded", -1);
     show_registers();
+    show_ins();
+    mem_start = (get_cpu()).pc;
+    show_mem();
 }
 
 void ld_handle(GtkButton* btn, gpointer data) {
@@ -86,12 +106,15 @@ void ld_handle(GtkButton* btn, gpointer data) {
     gtk_text_buffer_insert(asm_console_buf, &ae, "loaded", -1);
     show_registers();
     show_ins();
+    mem_start = (get_cpu()).pc;
+    show_mem();
 }
 
 void step_handle(GtkButton* btn, gpointer data) {
     step(0);
     show_registers();
     show_ins();
+    show_mem();
     GtkTextIter oe;
     if (get_out_flag()) {
         gtk_text_buffer_get_end_iter(out_console_buf, &oe);
@@ -112,8 +135,18 @@ void run_handle(GtkButton* btn, gpointer data) {
     }
     show_registers();
     show_ins();
+    show_mem();
 }
 
+void mem_mov_handle(GtkButton* btn, gpointer data) {
+    _Bool is_up = *(_Bool*)data;
+    if (is_up && mem_start) {
+        mem_start -= 10;
+    } else if (mem_start < (1 << 16)) {
+        mem_start += 10;
+    }
+    show_mem();
+}
 int main(int argc, char** argv) {
     GtkBuilder* builder;
     GError* error = NULL;
@@ -149,6 +182,13 @@ int main(int argc, char** argv) {
     ins_cur.ins = GTK_LABEL(gtk_builder_get_object(builder, "ins_cur_i"));
     ins_next.hex = GTK_LABEL(gtk_builder_get_object(builder, "ins_next_h"));
     ins_next.ins = GTK_LABEL(gtk_builder_get_object(builder, "ins_next_i"));
+    char bufa[50], bufv[50];
+    for (int i = 0; i < 10; i++) {
+        snprintf(bufa, 50, "mem_add_%d", i);
+        snprintf(bufv, 50, "mem_val_%d", i);
+        mem_monitor[i].add = GTK_LABEL(gtk_builder_get_object(builder, bufa));
+        mem_monitor[i].val = GTK_LABEL(gtk_builder_get_object(builder, bufv));
+    }
     g_signal_connect(gtk_builder_get_object(builder, "file_picker"), "file-set",
                      G_CALLBACK(file_picker_handle), 0);
     g_signal_connect(gtk_builder_get_object(builder, "asm_btn"), "clicked",
@@ -159,6 +199,13 @@ int main(int argc, char** argv) {
                      G_CALLBACK(step_handle), 0);
     g_signal_connect(gtk_builder_get_object(builder, "run_btn"), "clicked",
                      G_CALLBACK(run_handle), 0);
+    _Bool t, f;
+    t = 1;
+    f = 0;
+    g_signal_connect(gtk_builder_get_object(builder, "mem_add_up"), "clicked",
+                     G_CALLBACK(mem_mov_handle), &t);
+    g_signal_connect(gtk_builder_get_object(builder, "mem_add_down"), "clicked",
+                     G_CALLBACK(mem_mov_handle), &f);
     gtk_main();
     
     return 0;
