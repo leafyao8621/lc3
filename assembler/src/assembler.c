@@ -647,7 +647,7 @@ static _Bool parse(const char* fn) {
     char trim_buf[9];
     enum Operator op;
     enum Directive dir;
-    for (fgets(line_buf, 150, inf); !feof(inf); fgets(line_buf, 200, inf),
+    for (fgets(line_buf, 150, inf); !feof(inf); fgets(line_buf, 150, inf),
                                                 line_num++, code_end_ptr++) {
         seg_buf = strtok(line_buf, " ");
         if (*seg_buf != 10) {
